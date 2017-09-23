@@ -13,10 +13,14 @@
 #define PPM_FrLen 22500  //set the PPM frame length in microseconds (1ms = 1000µs)
 #define PPM_PulseLen 300  //set the pulse length
 #define onState 1  //set polarity of the pulses: 1 is positive, 0 is negative
-#define sigPin 4  //set PPM signal output pin on the arduino
+#define sigPin 3  //set PPM signal output pin on the arduino
 //////////////////////////////////////////////////////////////////
 
 int ppm[chanel_number];
+int delayValue = 0;
+
+bool newProcessing = true;
+String command;
 
 void setup() {
   Serial.begin(9600);  
@@ -48,8 +52,10 @@ void loop() {
     
     Serial.print("recieved message:");
     Serial.println(a);
-
-    commandInterpreter(a);
+    
+    command = a;
+    
+    commandInterpreter();
   }
 
   for(int i=0; i<chanel_number; i++){
@@ -58,51 +64,83 @@ void loop() {
 
 //!!!!!!! GAZ
   ppm[2] = 0;
+
+
+          Serial.print(ppm[0]);
+          Serial.print(", ");
+          Serial.print(ppm[1]);
+          Serial.print(", ");
+          Serial.print(ppm[2]);
+          Serial.print(", ");
+          Serial.println(ppm[3]);
 }
 
-void commandInterpreter(String command) {
+
+void commandInterpreter() {
       int lineSep = -1; 
       
-//0;11;222;333;444|0;111;7772;55;248
+//2000;2000;2000;2000;500|1700;1700;1700;1700;500
+      int startMillis;
+      
+      int ch1;
+      int ch2;
+      int ch3;
+      int ch4;
 
+      
       do {
-        lineSep = command.indexOf('|');
-        
-        int ch1Sep = command.indexOf(';'); 
-        int ch1 = command.substring(0, ch1Sep).toInt(); 
-        
-        int ch2Sep = command.indexOf(';', ch1Sep+1 ); 
-        int ch2 = command.substring(ch1Sep+1, ch2Sep+1).toInt(); 
-        
-        int ch3Sep = command.indexOf(';', ch2Sep+1 ); 
-        int ch3 = command.substring(ch2Sep+1, ch3Sep+1).toInt(); 
-        
-        int ch4Sep = command.indexOf(';', ch3Sep+1 );
-        int ch4 = command.substring(ch3Sep+1, ch4Sep).toInt();
+        if (newProcessing) {
+          lineSep = command.indexOf('|');
+          
+          int ch1Sep = command.indexOf(';'); 
+          ch1 = command.substring(0, ch1Sep).toInt(); 
+          
+          int ch2Sep = command.indexOf(';', ch1Sep+1 ); 
+          ch2 = command.substring(ch1Sep+1, ch2Sep+1).toInt(); 
+          
+          int ch3Sep = command.indexOf(';', ch2Sep+1 ); 
+          ch3 = command.substring(ch2Sep+1, ch3Sep+1).toInt(); 
+          
+          int ch4Sep = command.indexOf(';', ch3Sep+1 );
+          ch4 = command.substring(ch3Sep+1, ch4Sep).toInt();
+  
+          int delaySep = command.indexOf(';', ch4Sep+1 );
+          delayValue = command.substring(ch4Sep+1, lineSep).toInt();
+  
+          command.remove(0,lineSep+1);
+  
+          Serial.print("Processed command: ");
+          Serial.print(ch1);
+          Serial.print(", ");
+          Serial.print(ch2);
+          Serial.print(", ");
+          Serial.print(ch3);
+          Serial.print(", ");
+          Serial.print(ch4);
+          Serial.print(", ");
+          Serial.println(delayValue);
+        }
 
-        int delaySep = command.indexOf(';', ch4Sep+1 );
-        int delayValue = command.substring(ch4Sep+1, lineSep).toInt();
-
-        command.remove(0,lineSep+1);
-
-        Serial.print("Processed command: ");
-        Serial.print(ch1);
-        Serial.print(", ");
-        Serial.print(ch2);
-        Serial.print(", ");
-        Serial.print(ch3);
-        Serial.print(", ");
-        Serial.print(ch4);
-        Serial.print(", ");
-        Serial.println(delayValue);
-
+        
+        if (newProcessing) {
+            startMillis = millis();
+            newProcessing = false;
+        }
+        
         ppm[0] =ch1;
         ppm[1] =ch2;
         //!!!!!GAZ
         ppm[2] =0;//ch3;
         ppm[3] =ch4;
-        delay(delayValue);
-      }while (lineSep !=-1);
+
+        int currentMillis = millis();
+
+        if (currentMillis - startMillis >= delayValue) {
+          newProcessing = true;
+        }
+       
+      } while (lineSep !=-1);
+
 }
 
 ISR(TIMER1_COMPA_vect){  //leave this alone
