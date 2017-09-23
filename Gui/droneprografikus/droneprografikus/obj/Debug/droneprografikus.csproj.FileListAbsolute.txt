@@ -1,0 +1,9 @@
+c:\users\lackó\documents\visual studio 2017\Projects\droneprografikus\droneprografikus\bin\Debug\droneprografikus.exe.config
+c:\users\lackó\documents\visual studio 2017\Projects\droneprografikus\droneprografikus\bin\Debug\droneprografikus.exe
+c:\users\lackó\documents\visual studio 2017\Projects\droneprografikus\droneprografikus\bin\Debug\droneprografikus.pdb
+c:\users\lackó\documents\visual studio 2017\Projects\droneprografikus\droneprografikus\obj\Debug\droneprografikus.csprojResolveAssemblyReference.cache
+c:\users\lackó\documents\visual studio 2017\Projects\droneprografikus\droneprografikus\obj\Debug\droneprografikus.Form1.resources
+c:\users\lackó\documents\visual studio 2017\Projects\droneprografikus\droneprografikus\obj\Debug\droneprografikus.Properties.Resources.resources
+c:\users\lackó\documents\visual studio 2017\Projects\droneprografikus\droneprografikus\obj\Debug\droneprografikus.csproj.GenerateResource.Cache
+c:\users\lackó\documents\visual studio 2017\Projects\droneprografikus\droneprografikus\obj\Debug\droneprografikus.exe
+c:\users\lackó\documents\visual studio 2017\Projects\droneprografikus\droneprografikus\obj\Debug\droneprografikus.pdb
