@@ -1,7 +1,6 @@
-// Example by Tom Igoe
 /*
 Protokoll: 5 bit
-1-4 bit: 0-200-ig, 0=1000, 200=2000, 100=1500.
+1-4 bit: 0-200-ig, ahol a PPm lekepzeshez: 0=1000, 200=2000, 100=1500.
 5. bit= 244, teminátor bit
 */
 import processing.serial.*;
