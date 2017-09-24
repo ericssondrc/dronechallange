@@ -12,6 +12,7 @@ import javafx.scene.control.TextField
 import javafx.scene.layout.GridPane
 import javafx.stage.FileChooser
 import tornadofx.*
+import java.io.File
 import java.io.PrintWriter
 
 class InstructionModel {
@@ -229,13 +230,12 @@ class DroneTableView : View() {
                         button("Save") {
                             action {
                                 val fileChooser = createFileChooser("Save")
-                                val file = fileChooser.showSaveDialog(currentStage)
-                                PrintWriter(file).use { writer ->
-                                    tableView
-                                            .items
-                                            .sorted { o1, o2 -> o1.order.toInt().compareTo(o2.order.toInt())  }
-                                            .forEach { item ->
-                                        writer.println(item.toInstructon().toString())
+                                val file: File? = fileChooser.showSaveDialog(currentStage)
+                                file?.let {
+                                    PrintWriter(file).use { writer ->
+                                        tableView.items
+                                                .sortedBy { it.order.toInt() }
+                                                .forEach { item -> writer.println(item.toInstructon().toString()) }
                                     }
                                 }
                             }
@@ -249,8 +249,8 @@ class DroneTableView : View() {
                         button("Load") {
                             action {
                                 val fileChooser = createFileChooser("Load")
-                                val file = fileChooser.showOpenDialog(currentStage)
-                                file.readLines().forEach { line ->
+                                val file: File? = fileChooser.showOpenDialog(currentStage)
+                                file?.readLines()?.forEach { line ->
                                     val instr = Instruction.fromString(line)
                                     tableView.items.add(InstructionModel(orderCounter++,
                                             instr.channel1,
