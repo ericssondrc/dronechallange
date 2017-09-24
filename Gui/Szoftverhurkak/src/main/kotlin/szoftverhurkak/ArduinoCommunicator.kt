@@ -7,9 +7,13 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.io.PrintWriter
 
-abstract class ArduinoCommunicator(comPort: String, baudRate: Int = 9600) {
+class ArduinoCommunicator(comPort: String, baudRate: Int = 9600) {
 
-    var outStream: OutputStream
+    private val outStream: OutputStream
+    @Volatile
+    private var stopped = false
+    private val readerThread: Thread
+    var listener: (String) -> Unit = {}
 
     init {
         val portId = CommPortIdentifier.getPortIdentifier(comPort)
@@ -30,8 +34,8 @@ abstract class ArduinoCommunicator(comPort: String, baudRate: Int = 9600) {
         outStream = serialPort.outputStream
         val inStream = serialPort.inputStream
 
-        val a = Thread(ReaderThread(inStream))
-        a.start()
+        readerThread = Thread(ReaderThread(inStream))
+        readerThread.start()
     }
 
     fun sendString(command: String) {
@@ -40,13 +44,11 @@ abstract class ArduinoCommunicator(comPort: String, baudRate: Int = 9600) {
         pw.flush()
     }
 
-    abstract fun onMessageReceived(command: String)
-
     private inner class ReaderThread(private val `is`: InputStream) : Runnable {
 
         override fun run() {
-            var stringBuilder = StringBuilder()
-            while (true) {
+            val stringBuilder = StringBuilder()
+            while (!stopped) {
                 try {
                     var i = `is`.read()
                     while (i != -1) {
@@ -54,14 +56,18 @@ abstract class ArduinoCommunicator(comPort: String, baudRate: Int = 9600) {
                         i = `is`.read()
                     }
                     if (stringBuilder.isNotEmpty()) {
-                        onMessageReceived(stringBuilder.toString())
+                        listener(stringBuilder.toString())
                         stringBuilder.delete(0, stringBuilder.length)
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
-
             }
         }
+    }
+
+    fun stop() {
+        stopped = true
+        readerThread.interrupt()
     }
 }
