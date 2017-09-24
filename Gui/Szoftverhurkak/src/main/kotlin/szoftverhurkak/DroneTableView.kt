@@ -10,7 +10,9 @@ import javafx.scene.control.ComboBox
 import javafx.scene.control.TableView
 import javafx.scene.control.TextField
 import javafx.scene.layout.GridPane
+import javafx.stage.FileChooser
 import tornadofx.*
+import java.io.PrintWriter
 
 class InstructionModel {
     constructor(order: Number, channel1: Number, channel2: Number, channel3: Number, channel4: Number, time: Number) {
@@ -100,6 +102,15 @@ class DroneTableView : View() {
         baudRateTextField.isDisable = false
         runButton.isDisable = true
         stepButton.isDisable = true
+    }
+
+    private fun createFileChooser(title: String): FileChooser {
+        val fileChooser = FileChooser()
+        fileChooser.title = title
+        val txtFilter = FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt" )
+        val allFilter = FileChooser.ExtensionFilter("All files (*.*)", "*.*" )
+        fileChooser.extensionFilters.addAll(txtFilter, allFilter)
+        return fileChooser
     }
 
     init {
@@ -216,7 +227,15 @@ class DroneTableView : View() {
                             }
                         }
                         button("Save") {
-
+                            action {
+                                val fileChooser = createFileChooser("Save")
+                                val file = fileChooser.showSaveDialog(currentStage)
+                                PrintWriter(file).use { writer ->
+                                    tableView.items.forEach { item ->
+                                        writer.println(item.toInstructon().toString())
+                                    }
+                                }
+                            }
                         }
                         button("Clear") {
                             action {
@@ -225,6 +244,22 @@ class DroneTableView : View() {
                             }
                         }
                         button("Load") {
+                            action {
+                                val fileChooser = createFileChooser("Load")
+                                val file = fileChooser.showOpenDialog(currentStage)
+                                var nextPlace = tableView.items.size
+                                file.readLines().forEach { line ->
+                                    val instr = Instruction.fromString(line)
+                                    tableView.items.add(InstructionModel(nextPlace++,
+                                            instr.channel1,
+                                            instr.channel2,
+                                            instr.channel3,
+                                            instr.channel4,
+                                            instr.time))
+
+                                }
+
+                            }
 
                         }
                     }
