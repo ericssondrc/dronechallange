@@ -1,5 +1,7 @@
 package szoftverhurkak
 
+import gnu.io.CommPortIdentifier
+
 class ConnectionManager {
 
     private var isConnected = false
@@ -7,10 +9,10 @@ class ConnectionManager {
     private val arduinoCommunicator: ArduinoCommunicator = ArduinoCommunicator(instructionCompiler)
 
     fun getCommPorts(): List<String> {
-//        val portIdentifiers = CommPortIdentifier.getPortIdentifiers()
-//        val commPorts = portIdentifiers.toList().map { it as CommPortIdentifier }
-//        return commPorts.map { it.name }
-        return listOf("COM1", "COM2")
+        val portIdentifiers = CommPortIdentifier.getPortIdentifiers()
+        val commPorts = portIdentifiers.toList().map { it as CommPortIdentifier }
+        return commPorts.map { it.name }
+//        return listOf("COM1", "COM2", "COM3")
     }
 
     fun connect(commPort: String?, baudRate: Int?): ArduinoCommunicator {

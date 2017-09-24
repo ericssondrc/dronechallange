@@ -16,17 +16,17 @@ class ArduinoCommunicator(private val instructionCompiler: InstructionCompiler) 
 
     fun connect(commPort: String, baudRate: Int) {
         stopped = false
-//        val portId = CommPortIdentifier.getPortIdentifier(commPort)
-//        val serialPort = portId.open("Drone Controller", 5000) as SerialPort
-//
-//        serialPort.setSerialPortParams(
-//                baudRate,
-//                SerialPort.DATABITS_8,
-//                SerialPort.STOPBITS_1,
-//                SerialPort.PARITY_NONE)
-//
-//        printWriter = PrintWriter(serialPort.outputStream)
-//        readerThread = Thread(ReaderThread(serialPort.inputStream)).apply { start() }
+        val portId = CommPortIdentifier.getPortIdentifier(commPort)
+        val serialPort = portId.open("Drone Controller", 5000) as SerialPort
+
+        serialPort.setSerialPortParams(
+                baudRate,
+                SerialPort.DATABITS_8,
+                SerialPort.STOPBITS_1,
+                SerialPort.PARITY_NONE)
+
+        printWriter = PrintWriter(serialPort.outputStream)
+        readerThread = Thread(ReaderThread(serialPort.inputStream)).apply { start() }
     }
 
     fun sendInstruction(instruction: Instruction) {
