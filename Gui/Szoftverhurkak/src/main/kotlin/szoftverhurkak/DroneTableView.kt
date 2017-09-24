@@ -231,7 +231,10 @@ class DroneTableView : View() {
                                 val fileChooser = createFileChooser("Save")
                                 val file = fileChooser.showSaveDialog(currentStage)
                                 PrintWriter(file).use { writer ->
-                                    tableView.items.forEach { item ->
+                                    tableView
+                                            .items
+                                            .sorted { o1, o2 -> o1.order.toInt().compareTo(o2.order.toInt())  }
+                                            .forEach { item ->
                                         writer.println(item.toInstructon().toString())
                                     }
                                 }
