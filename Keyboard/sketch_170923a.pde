@@ -1,5 +1,8 @@
-// Example by Tom Igoe
-
+/*
+Protokoll: 5 bit
+1-4 bit: 0-200-ig, ahol a PPm lekepzeshez: 0=1000, 200=2000, 100=1500.
+5. bit= 244, teminátor bit
+*/
 import processing.serial.*;
 Serial myPort;
 void setup(){
@@ -153,7 +156,7 @@ void mouseClicked(){
 }
 
 void connectSerial(){
-myPort = new Serial(this, uCom, 115200);
+myPort = new Serial(this, uCom, 9600);
 isInited = true;
 }
 
