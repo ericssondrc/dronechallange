@@ -2,21 +2,17 @@ package szoftverhurkak
 
 import javafx.beans.property.Property
 import javafx.collections.FXCollections
-import javafx.collections.ObservableList
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.geometry.Pos
 import javafx.scene.control.Button
-import javafx.scene.control.TableView
 import javafx.scene.control.TextField
 import javafx.scene.layout.GridPane
 import tornadofx.*
-import tornadofx.Stylesheet.Companion.button
 
-val tableContent = FXCollections.observableArrayList<Instruction>()
+val tableContent = FXCollections.observableArrayList<InstructionModel>()
 
-
-class Instruction {
+class InstructionModel {
     constructor(channel1: Number, channel2: Number, channel3: Number, channel4: Number, time: Number) {
         this.channel1 = channel1
         this.channel2 = channel2
@@ -26,24 +22,24 @@ class Instruction {
     }
 
     var channel1 by property<Number>()
-    fun channel1Property() = getProperty(Instruction::channel1)
+    fun channel1Property() = getProperty(InstructionModel::channel1)
 
     var channel2 by property<Number>()
-    fun channel2Property() = getProperty(Instruction::channel2)
+    fun channel2Property() = getProperty(InstructionModel::channel2)
 
     var channel3 by property<Number>()
-    fun channel3Property() = getProperty(Instruction::channel3)
+    fun channel3Property() = getProperty(InstructionModel::channel3)
 
     var channel4 by property<Number>()
-    fun channel4Property() = getProperty(Instruction::channel4)
+    fun channel4Property() = getProperty(InstructionModel::channel4)
 
     var time by property<Number>()
-    fun timeProperty() = getProperty(Instruction::time)
+    fun timeProperty() = getProperty(InstructionModel::time)
 
-    override fun toString(): String = "$channel1;$channel2;$channel3;$channel4;$time"
+    fun toInstructon() = Instruction(channel1.toInt(), channel2.toInt(), channel3.toInt(), channel4.toInt(), time.toInt())
 }
 
-class InstructionModel : ItemViewModel<Instruction>() {
+class InstructionViewModel : ItemViewModel<InstructionModel>() {
     val channel1: Property<Number> = bind { item?.channel1Property() }
     val channel2: Property<Number> = bind { item?.channel2Property() }
     val channel3: Property<Number> = bind { item?.channel3Property() }
@@ -52,24 +48,18 @@ class InstructionModel : ItemViewModel<Instruction>() {
 }
 
 val connectionManager = ConnectionManager()
-
-//val arduinoCommunicator = object : ArduinoCommunicator("COM4") {
-//    override fun onMessageReceived(command: String) {
-//        println("returned command: $command")
-//    }
-//}
+var communicator: ArduinoCommunicator? = null
 
 
 class DroneTableView : View() {
     override val root = GridPane()
 
-    val model: InstructionModel by inject()
+    private val viewModel: InstructionViewModel by inject()
     var runButton: Button? = null
     var commPort: String? = null
     var currentPosition = 0
 
     override fun onDelete() {
-//        arduinoCommunicator.stop()
         super.onDelete()
     }
 
@@ -79,14 +69,14 @@ class DroneTableView : View() {
                 vbox {
                     label("Instructions for the copter")
                     tableview(tableContent) {
-                        column("Channel 1", Instruction::channel1Property)
-                        column("Channel 2", Instruction::channel2Property)
-                        column("Channel 3", Instruction::channel3Property)
-                        column("Channel 4", Instruction::channel4Property)
-                        column("Time (ms)", Instruction::timeProperty)
+                        column("Channel 1", InstructionModel::channel1Property)
+                        column("Channel 2", InstructionModel::channel2Property)
+                        column("Channel 3", InstructionModel::channel3Property)
+                        column("Channel 4", InstructionModel::channel4Property)
+                        column("Time (ms)", InstructionModel::timeProperty)
 
                         onSelectionChange {
-                            colorpicker { }
+
                         }
                     }
                 }
@@ -109,7 +99,10 @@ class DroneTableView : View() {
                             button("Connect") {
                                 action {
                                     try {
-                                        connectionManager.connect(commPort, baudRateTextField?.text?.toInt())
+                                        communicator = connectionManager.connect(commPort, baudRateTextField?.text?.toInt())
+                                        communicator?.commandExecutionListener = { println(it) }
+                                        runButton?.isDisable = false
+                                        isDisable = true
                                     } catch (e: Exception) {
                                         println(e.message)
                                     }
@@ -121,32 +114,32 @@ class DroneTableView : View() {
                     form {
                         fieldset("Instruction") {
                             field("Channel 1") {
-                                textfield(model.channel1)
+                                textfield(viewModel.channel1)
                             }
                             field("Channel 2") {
-                                textfield(model.channel2)
+                                textfield(viewModel.channel2)
                             }
                             field("Channel 3") {
-                                textfield(model.channel3)
+                                textfield(viewModel.channel3)
                             }
                             field("Channel 4") {
-                                textfield(model.channel4)
+                                textfield(viewModel.channel4)
                             }
                             field("Time") {
-                                textfield(model.time).required()
+                                textfield(viewModel.time).required()
                             }
                         }
                         button {
                             alignment = Pos.CENTER
                             text = "Add Instruction"
                             action {
-                                model.commit {
-                                    tableContent.add(Instruction(
-                                            model.channel1.value ?: 1500,
-                                            model.channel2.value ?: 1500,
-                                            model.channel3.value ?: 1500,
-                                            model.channel4.value ?: 1500,
-                                            model.time.value))
+                                viewModel.commit {
+                                    tableContent.add(InstructionModel(
+                                            viewModel.channel1.value ?: 1520,
+                                            viewModel.channel2.value ?: 1520,
+                                            viewModel.channel3.value ?: 1520,
+                                            viewModel.channel4.value ?: 1520,
+                                            viewModel.time.value))
                                 }
                             }
                         }
@@ -156,8 +149,8 @@ class DroneTableView : View() {
                         alignment = Pos.CENTER
                         runButton = button("Run") {
                             action {
-                                val message = tableContent.subList(currentPosition, tableContent.size).joinToString("|")
-//                                arduinoCommunicator.sendString(message)
+                                val instructions = tableContent.subList(currentPosition, tableContent.size)
+                                communicator?.sendInstructions(instructions.map { it.toInstructon() })
                                 currentPosition = tableContent.size
                             }
                             isDisable = true
@@ -170,6 +163,9 @@ class DroneTableView : View() {
                                 tableContent.clear()
                                 currentPosition = 0
                             }
+                        }
+                        button("Load") {
+
                         }
                     }
                 }
