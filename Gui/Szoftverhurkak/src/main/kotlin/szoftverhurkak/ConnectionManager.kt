@@ -2,6 +2,7 @@ package szoftverhurkak
 
 class ConnectionManager {
 
+    private var isConnected = false
     private val instructionCompiler = SemicolonPipeInstructionCompiler()
     private val arduinoCommunicator: ArduinoCommunicator = ArduinoCommunicator(instructionCompiler)
 
@@ -13,15 +14,24 @@ class ConnectionManager {
     }
 
     fun connect(commPort: String?, baudRate: Int?): ArduinoCommunicator {
-        if (commPort == null || baudRate == null) {
-            throw Exception("CommPort ($commPort) and BaudRate ($baudRate) cannot be null.")
-        }
-        try {
-            arduinoCommunicator.connect(commPort, baudRate)
-        } catch (e: Exception) {
-            throw Exception("Failed to connect on port $commPort with baud rate $baudRate. Cause: ${e.message}" , e)
+        if (!isConnected) {
+            if (commPort == null || baudRate == null) {
+                throw Exception("CommPort ($commPort) and BaudRate ($baudRate) cannot be null.")
+            }
+            try {
+                arduinoCommunicator.connect(commPort, baudRate)
+            } catch (e: Exception) {
+                throw Exception("Failed to connect on port $commPort with baud rate $baudRate. Cause: ${e.message}", e)
+            }
+            isConnected = true
         }
         return arduinoCommunicator
+    }
+
+    fun disconnect() {
+        if (isConnected) {
+            arduinoCommunicator.stop()
+        }
     }
 
 
