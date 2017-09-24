@@ -247,10 +247,9 @@ class DroneTableView : View() {
                             action {
                                 val fileChooser = createFileChooser("Load")
                                 val file = fileChooser.showOpenDialog(currentStage)
-                                var nextPlace = tableView.items.size
                                 file.readLines().forEach { line ->
                                     val instr = Instruction.fromString(line)
-                                    tableView.items.add(InstructionModel(nextPlace++,
+                                    tableView.items.add(InstructionModel(orderCounter++,
                                             instr.channel1,
                                             instr.channel2,
                                             instr.channel3,
