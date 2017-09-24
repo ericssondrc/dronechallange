@@ -77,6 +77,31 @@ class DroneTableView : View() {
         super.onDelete()
     }
 
+    private fun connectClicked() {
+        try {
+            communicator = connectionManager.connect(commPort, baudRateTextField.text?.toInt())
+            communicator?.commandExecutionListener = { println(it) }
+            connectButton.isDisable = true
+            disconnectButton.isDisable = false
+            comboBox.isDisable = true
+            baudRateTextField.isDisable = true
+            runButton.isDisable = false
+            stepButton.isDisable = false
+        } catch (e: Exception) {
+            println(e.message)
+        }
+    }
+
+    private fun disconnectClicked() {
+        connectionManager.disconnect()
+        disconnectButton.isDisable = true
+        connectButton.isDisable = false
+        comboBox.isDisable = false
+        baudRateTextField.isDisable = false
+        runButton.isDisable = true
+        stepButton.isDisable = true
+    }
+
     init {
         with(root) {
             hbox {
@@ -109,30 +134,13 @@ class DroneTableView : View() {
                             hbox {
                                 connectButton = button("Connect") {
                                     action {
-                                        try {
-                                            communicator = connectionManager.connect(commPort, baudRateTextField?.text?.toInt())
-                                            communicator?.commandExecutionListener = { println(it) }
-                                            isDisable = true
-                                            disconnectButton.isDisable = false
-                                            comboBox.isDisable = true
-                                            baudRateTextField.isDisable = true
-                                            runButton.isDisable = false
-                                            stepButton.isDisable = false
-                                        } catch (e: Exception) {
-                                            println(e.message)
-                                        }
+                                        connectClicked()
                                     }
                                 }
                                 disconnectButton = button("Disconnect") {
                                     isDisable = true
                                     action {
-                                        connectionManager.disconnect()
-                                        isDisable = true
-                                        connectButton.isDisable = false
-                                        comboBox.isDisable = false
-                                        baudRateTextField.isDisable = false
-                                        runButton.isDisable = true
-                                        stepButton.isDisable = true
+                                        disconnectClicked()
                                     }
                                 }
                             }
