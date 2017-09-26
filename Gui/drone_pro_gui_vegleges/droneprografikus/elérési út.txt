@@ -1,0 +1,3 @@
+droneprografikus\droneprografikus\bin\Debug
+
+itt találjátok az exe-t.

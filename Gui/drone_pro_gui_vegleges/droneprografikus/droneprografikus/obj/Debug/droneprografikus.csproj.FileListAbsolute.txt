@@ -1,0 +1,18 @@
+c:\users\lackó\documents\visual studio 2017\Projects\droneprografikus\droneprografikus\bin\Debug\droneprografikus.exe.config
+c:\users\lackó\documents\visual studio 2017\Projects\droneprografikus\droneprografikus\bin\Debug\droneprografikus.exe
+c:\users\lackó\documents\visual studio 2017\Projects\droneprografikus\droneprografikus\bin\Debug\droneprografikus.pdb
+c:\users\lackó\documents\visual studio 2017\Projects\droneprografikus\droneprografikus\obj\Debug\droneprografikus.csprojResolveAssemblyReference.cache
+c:\users\lackó\documents\visual studio 2017\Projects\droneprografikus\droneprografikus\obj\Debug\droneprografikus.Form1.resources
+c:\users\lackó\documents\visual studio 2017\Projects\droneprografikus\droneprografikus\obj\Debug\droneprografikus.Properties.Resources.resources
+c:\users\lackó\documents\visual studio 2017\Projects\droneprografikus\droneprografikus\obj\Debug\droneprografikus.csproj.GenerateResource.Cache
+c:\users\lackó\documents\visual studio 2017\Projects\droneprografikus\droneprografikus\obj\Debug\droneprografikus.exe
+c:\users\lackó\documents\visual studio 2017\Projects\droneprografikus\droneprografikus\obj\Debug\droneprografikus.pdb
+\\winsrv_2k12\roaming$\ronaikovacsmartin\documents\DroneChallenge\droneprografikus-20170926T132253Z-001\droneprografikus\droneprografikus\bin\Debug\droneprografikus.exe.config
+\\winsrv_2k12\roaming$\ronaikovacsmartin\documents\DroneChallenge\droneprografikus-20170926T132253Z-001\droneprografikus\droneprografikus\bin\Debug\droneprografikus.exe
+\\winsrv_2k12\roaming$\ronaikovacsmartin\documents\DroneChallenge\droneprografikus-20170926T132253Z-001\droneprografikus\droneprografikus\bin\Debug\droneprografikus.pdb
+\\winsrv_2k12\roaming$\ronaikovacsmartin\documents\DroneChallenge\droneprografikus-20170926T132253Z-001\droneprografikus\droneprografikus\obj\Debug\droneprografikus.csprojResolveAssemblyReference.cache
+\\winsrv_2k12\roaming$\ronaikovacsmartin\documents\DroneChallenge\droneprografikus-20170926T132253Z-001\droneprografikus\droneprografikus\obj\Debug\droneprografikus.Form1.resources
+\\winsrv_2k12\roaming$\ronaikovacsmartin\documents\DroneChallenge\droneprografikus-20170926T132253Z-001\droneprografikus\droneprografikus\obj\Debug\droneprografikus.Properties.Resources.resources
+\\winsrv_2k12\roaming$\ronaikovacsmartin\documents\DroneChallenge\droneprografikus-20170926T132253Z-001\droneprografikus\droneprografikus\obj\Debug\droneprografikus.csproj.GenerateResource.Cache
+\\winsrv_2k12\roaming$\ronaikovacsmartin\documents\DroneChallenge\droneprografikus-20170926T132253Z-001\droneprografikus\droneprografikus\obj\Debug\droneprografikus.exe
+\\winsrv_2k12\roaming$\ronaikovacsmartin\documents\DroneChallenge\droneprografikus-20170926T132253Z-001\droneprografikus\droneprografikus\obj\Debug\droneprografikus.pdb
